@@ -44,7 +44,7 @@ export async function uploadCSV(file) {
 }
 
 function authHeaders() {
-  const token = localStorage.getItem("access");
+  const token = localStorage.getItem("access_token"); 
   return token ? { Authorization: `Bearer ${token}` } : {};
 }
 

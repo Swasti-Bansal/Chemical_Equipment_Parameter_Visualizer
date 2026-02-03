@@ -100,6 +100,7 @@ def report_pdf(request):
     return resp
 
 @api_view(["POST"])
+@permission_classes([IsAuthenticated])
 @parser_classes([MultiPartParser, FormParser])
 def upload_csv(request):
     s = UploadCSVSerializer(data=request.data)
@@ -129,6 +130,7 @@ def upload_csv(request):
 
 
 @api_view(["GET"])
+@permission_classes([IsAuthenticated])
 def history_api(request):
     latest = UploadHistory.objects.order_by("-uploaded_at")[:5]
     s = UploadHistorySerializer(latest, many=True)

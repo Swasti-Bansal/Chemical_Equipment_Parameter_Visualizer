@@ -1,22 +1,19 @@
 import requests
 
-BASE = "http://127.0.0.1:8000/api/login/"
+BASE = "http://127.0.0.1:8000/api"   # ✅ correct base
 
 ACCESS_TOKEN = None
 REFRESH_TOKEN = None
 
-def set_token(token: str):
-    global _access_token
-    _access_token = token
-
-
 def login(username, password):
     global ACCESS_TOKEN, REFRESH_TOKEN
+
     r = requests.post(
-        f"{BASE}/api/token/",
+        f"{BASE}/login/",            # ✅ correct endpoint
         json={"username": username, "password": password},
         timeout=10
     )
+
     if r.status_code != 200:
         raise Exception(r.text)
 
@@ -31,9 +28,9 @@ def auth_headers():
     return {"Authorization": f"Bearer {ACCESS_TOKEN}"}
 
 def download_report(save_path):
-    r = requests.get(f"{BASE}/report/", headers=auth_headers(), stream=True)
+    r = requests.get(f"{BASE}/report/", headers=auth_headers(), stream=True, timeout=30)
     if r.status_code != 200:
-        raise Exception(f"Report error: {r.status_code}")
+        raise Exception(f"Report error: {r.status_code} {r.text}")
 
     with open(save_path, "wb") as f:
         for chunk in r.iter_content(chunk_size=8192):
@@ -43,15 +40,14 @@ def download_report(save_path):
 def get_history():
     r = requests.get(f"{BASE}/history/", headers=auth_headers(), timeout=20)
     if r.status_code != 200:
-        raise Exception(f"History error: {r.status_code}")
+        raise Exception(f"History error: {r.status_code} {r.text}")
     return r.json()
 
 def upload_csv(path):
     with open(path, "rb") as f:
         files = {"file": f}
         r = requests.post(f"{BASE}/upload/", files=files, headers=auth_headers(), timeout=60)
-    if r.status_code != 200:
-        raise Exception(f"Upload error: {r.status_code}")
+
+    if r.status_code not in (200, 201):
+        raise Exception(f"Upload error: {r.status_code} {r.text}")
     return r.json()
-
-
