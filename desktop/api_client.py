@@ -1,6 +1,6 @@
 import requests
 
-BASE = "http://127.0.0.1:8000/api"   # ✅ correct base
+BASE = "http://127.0.0.1:8000/api"
 
 ACCESS_TOKEN = None
 REFRESH_TOKEN = None
@@ -9,7 +9,7 @@ def login(username, password):
     global ACCESS_TOKEN, REFRESH_TOKEN
 
     r = requests.post(
-        f"{BASE}/login/",            # ✅ correct endpoint
+        f"{BASE}/login/",
         json={"username": username, "password": password},
         timeout=10
     )

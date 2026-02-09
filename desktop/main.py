@@ -137,7 +137,7 @@ class AnimatedLabel(QLabel):
         self.animation.setStartValue(0)
         self.animation.setEndValue(-10)
         self.animation.setEasingCurve(QEasingCurve.InOutSine)
-        self.animation.setLoopCount(-1)  # infinite
+        self.animation.setLoopCount(-1)
         
     @pyqtProperty(int)
     def offset(self):
@@ -305,7 +305,7 @@ class LoginDialog(QDialog):
         """Animate the icon floating up and down"""
         self.timer = QTimer(self)
         self.timer.timeout.connect(self.animate_float)
-        self.timer.start(50)  # Update every 50ms
+        self.timer.start(50)  
         self.float_offset = 0
         self.float_direction = 1
         
@@ -317,7 +317,6 @@ class LoginDialog(QDialog):
         elif self.float_offset <= 0:
             self.float_direction = 1
             
-        # Apply transform
         self.icon.setStyleSheet(f"""
             font-size: 64px;
             background: transparent;
@@ -395,12 +394,10 @@ class Dashboard(QWidget):
 
         root.addLayout(header)
 
-        # Status
         self.status = QLabel("")
         self.status.setVisible(False)
         root.addWidget(self.status)
 
-        # --------- Latest Summary card (KPIs) ---------
         self.latest_card = Card()
         latest_layout = QVBoxLayout(self.latest_card)
         latest_layout.setContentsMargins(16, 16, 16, 16)
@@ -418,7 +415,6 @@ class Dashboard(QWidget):
         top_left.addWidget(self.latest_file)
         latest_layout.addLayout(top_left)
 
-        # KPI GRID - Changed to 1x4 to match web version
         self.kpi_grid = QGridLayout()
         self.kpi_grid.setContentsMargins(0, 16, 0, 0)
         self.kpi_grid.setHorizontalSpacing(22)
@@ -429,7 +425,6 @@ class Dashboard(QWidget):
         self.kpi_pressure = self.make_kpi("Pressure", "-", "#fbbf24")
         self.kpi_temp = self.make_kpi("Temp", "-", "#fb7185")
 
-        # 1x4 layout like web version
         self.kpi_grid.addWidget(self.kpi_total, 0, 0)
         self.kpi_grid.addWidget(self.kpi_flow, 0, 1)
         self.kpi_grid.addWidget(self.kpi_pressure, 1, 0)
@@ -442,7 +437,7 @@ class Dashboard(QWidget):
 
         latest_layout.addLayout(self.kpi_grid, 1)
 
-        # --------- History card (table) ---------
+        # History card (table)
         self.history_card = Card()
         history_layout = QVBoxLayout(self.history_card)
         history_layout.setContentsMargins(26, 16, 16, 16)
@@ -477,7 +472,7 @@ class Dashboard(QWidget):
 
         history_layout.addWidget(self.table)
 
-        # --------- Bar chart card ---------
+        # Bar chart card
         self.bar_card = Card()
         bar_layout = QVBoxLayout(self.bar_card)
         bar_layout.setContentsMargins(16, 16, 16, 16)
@@ -490,7 +485,7 @@ class Dashboard(QWidget):
         self.bar_canvas = MplCanvas()
         bar_layout.addWidget(self.bar_canvas, 1)
 
-        # --------- Line chart card ---------
+        # Line chart card
         self.line_card = Card()
         line_layout = QVBoxLayout(self.line_card)
         line_layout.setContentsMargins(16, 16, 16, 16)
@@ -503,7 +498,7 @@ class Dashboard(QWidget):
         self.line_canvas = MplCanvas()
         line_layout.addWidget(self.line_canvas, 1)
 
-        # --------- Tabs ---------
+        # Tabs
         tabs = QTabWidget()
         tabs.setStyleSheet("""
         QTabWidget::pane{ border:0; }
@@ -555,14 +550,12 @@ class Dashboard(QWidget):
         root.addWidget(tabs, 1)
         self.setLayout(root)
 
-        # Hooks
         self.choose_btn.clicked.connect(self.pick_file)
         self.upload_btn.clicked.connect(self.do_upload)
 
         self.load_data()
 
     def make_kpi(self, label, value, color):
-        """KPI tiles matching web version style"""
         box = QFrame()
         box.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         box.setMinimumHeight(100)

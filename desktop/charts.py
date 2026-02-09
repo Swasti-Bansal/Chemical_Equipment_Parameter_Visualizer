@@ -4,8 +4,6 @@ from matplotlib.figure import Figure
 THEME_BG = "#111426"
 GRID = "#262a40"
 TEXT = "#cbd5e1"
-
-# Exact colors from web version
 COL_BLUE = "#6366f1"
 COL_GREEN = "#34d399"
 COL_ORANGE = "#fbbf24"
@@ -42,7 +40,6 @@ class MplCanvas(FigureCanvas):
         self.ax.set_facecolor(THEME_BG)
 
         if labels and values:
-            # Match web version colors exactly
             palette = [COL_BLUE, COL_GREEN, COL_ORANGE, COL_RED, COL_LIGHT_BLUE]
             colors = [palette[i % len(palette)] for i in range(len(labels))]
             self.ax.bar(labels, values, color=colors, edgecolor=GRID, linewidth=0.8)
@@ -56,18 +53,16 @@ class MplCanvas(FigureCanvas):
         self.ax.clear()
         self.ax.set_facecolor(THEME_BG)
 
-        # Match web version colors exactly
         colors = {
-            "Flow": COL_GREEN,      # Green like web
-            "Pressure": COL_ORANGE, # Orange like web
-            "Temp": COL_RED,        # Red like web
+            "Flow": COL_GREEN,     
+            "Pressure": COL_ORANGE,
+            "Temp": COL_RED,        
         }
 
         for name, y in series_dict.items():
             if not y:
                 continue
             
-            # Filter out None values
             valid_indices = [i for i, val in enumerate(y) if val is not None]
             if not valid_indices:
                 continue
@@ -87,7 +82,6 @@ class MplCanvas(FigureCanvas):
 
         self._style(title)
         
-        # Style legend to match web
         legend = self.ax.legend(
             facecolor=THEME_BG,
             edgecolor=GRID,

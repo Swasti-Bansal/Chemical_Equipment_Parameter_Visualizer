@@ -75,7 +75,7 @@ export default function App() {
     if (authed) loadHistory();
   }, [authed]);
 
-  /* ---------------- LOGIN ---------------- */
+  /* Authorization */
   async function handleLogin() {
     if (!username || !password) {
       setErr("Enter username & password");
@@ -131,7 +131,7 @@ export default function App() {
 
   const latest = history[0];
 
-  /* ---------------- LOGIN PAGE ---------------- */
+  /* LOGIN PAGE */
   if (!authed) {
     return (
       <div className="loginContainer">
@@ -182,7 +182,7 @@ export default function App() {
     );
   }
 
-  /* ---------------- DASHBOARD PAGE ---------------- */
+  /* DASHBOARD PAGE */
   return (
     <div className="container">
 
@@ -230,7 +230,7 @@ export default function App() {
       {err && <div className="alert error">{err}</div>}
       {msg && <div className="alert success">{msg}</div>}
 
-      {/* ---------- CARDS ---------- */}
+      {/* CARDS */}
       <div className="grid" style={{ marginTop: 14 }}>
 
         <div className="card">
@@ -268,7 +268,7 @@ export default function App() {
         </div>
       </div>
 
-      {/* ---------- CHARTS ---------- */}
+      {/* CHARTS */}
       <div className="grid" style={{ marginTop: 14 }}>
 
         <div className="card">
