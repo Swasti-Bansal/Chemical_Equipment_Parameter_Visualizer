@@ -25,25 +25,30 @@ function isLoggedIn() {
 
 export default function App() {
 
-  /* ---------------- AUTH STATE ---------------- */
+  /* AUTH STATE */
   const [authed, setAuthed] = useState(isLoggedIn());
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
-  /* ---------------- DASHBOARD STATE ---------------- */
+  /* DASHBOARD STATE */
   const [history, setHistory] = useState([]);
   const [err, setErr] = useState("");
   const [msg, setMsg] = useState("");
   const [file, setFile] = useState(null);
   const [uploading, setUploading] = useState(false);
 
-  /* ---------------- LOAD DATA ---------------- */
+  /* LOAD DATA */
   async function loadHistory() {
     try {
       setErr("");
       const data = await getHistory();
       setHistory(data);
-    } catch {
+    } catch (e) {
+      if (e.response?.status === 401) {
+        setErr("Session expired. Logging out...");
+        setTimeout(handleLogout, 1500);
+        return;
+      }
       setErr("Unauthorized or failed to load history");
     }
   }
@@ -93,9 +98,12 @@ export default function App() {
     setHistory([]);
     setMsg("");
     setErr("");
+    setUsername("");
+    setPassword("");
+    window.location.reload();
   }
 
-  /* ---------------- UPLOAD ---------------- */
+  /* UPLOAD */
   async function handleUpload() {
     if (!file) {
       setErr("Please select a CSV file");
@@ -126,29 +134,50 @@ export default function App() {
   /* ---------------- LOGIN PAGE ---------------- */
   if (!authed) {
     return (
-      <div className="container" style={{ maxWidth: 360, margin: "auto" }}>
-        <h1 className="title">Login</h1>
+      <div className="loginContainer">
+        <div className="loginCard">
+          <div className="loginHeader">
+            <div className="logoIcon">📊</div>
+            <h1 className="loginTitle">CSV Dashboard</h1>
+            <p className="loginSubtitle">Sign in to access your analytics</p>
+          </div>
 
-        {err && <div className="alert error">{err}</div>}
+          {err && <div className="alert error">{err}</div>}
+          {msg && <div className="alert success">{msg}</div>}
 
-        <input
-          className="inputFile"
-          placeholder="Username"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-        />
+          <div className="loginForm">
+            <div className="inputGroup">
+              <label className="inputLabel">Username</label>
+              <input
+                className="loginInput"
+                placeholder="Enter your username"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                onKeyPress={(e) => e.key === 'Enter' && handleLogin()}
+              />
+            </div>
 
-        <input
-          className="inputFile"
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
+            <div className="inputGroup">
+              <label className="inputLabel">Password</label>
+              <input
+                className="loginInput"
+                type="password"
+                placeholder="Enter your password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                onKeyPress={(e) => e.key === 'Enter' && handleLogin()}
+              />
+            </div>
 
-        <button className="btn" onClick={handleLogin} style={{ marginTop: 10 }}>
-          Login
-        </button>
+            <button className="loginBtn" onClick={handleLogin}>
+              Sign In
+            </button>
+          </div>
+
+          <div className="loginFooter">
+            <p>Don't have an account? Contact your administrator</p>
+          </div>
+        </div>
       </div>
     );
   }
@@ -164,7 +193,8 @@ export default function App() {
           <button
             onClick={handleLogout}
             style={{
-              background: "transparent",
+              backgroundColor: "#ef4444",
+              // background: "transparent",
               border: "1px solid #262a40",
               color: "#fff",
               padding: "8px 12px",
@@ -242,6 +272,7 @@ export default function App() {
       <div className="grid" style={{ marginTop: 14 }}>
 
         <div className="card">
+          <div className="sectionTitle">Equipment Distribution</div>
           <Bar
             data={{
               labels: Object.keys(latest?.summary?.type_distribution || {}),
@@ -250,21 +281,55 @@ export default function App() {
                 backgroundColor: ["#6366f1","#34d399","#fbbf24","#fb7185","#60a5fa"]
               }]
             }}
+            options={{
+              responsive: true,
+              plugins: { legend: { display: false } }
+            }}
           />
         </div>
 
         <div className="card">
+          <div className="sectionTitle">Metrics Over Time</div>
           <Line
             data={{
-              labels: history.map((_,i)=>`#${i+1}`),
-              datasets:[
+              labels: history.map((_, i) => `#${i + 1}`).reverse(),
+              datasets: [
                 {
-                  label:"Flow",
-                  data:history.map(h=>h.summary?.avg_flowrate),
-                  borderColor:"#4f46e5",
-                  tension:0.4
+                  label: "Flow",
+                  data: history.map(h => h.summary?.avg_flowrate).reverse(),
+                  borderColor: "#34d399",
+                  backgroundColor: "rgba(52, 211, 153, 0.1)",
+                  tension: 0.4
+                },
+                {
+                  label: "Pressure",
+                  data: history.map(h => h.summary?.avg_pressure).reverse(),
+                  borderColor: "#fbbf24",
+                  backgroundColor: "rgba(251, 191, 36, 0.1)",
+                  tension: 0.4
+                },
+                {
+                  label: "Temperature",
+                  data: history.map(h => h.summary?.avg_temperature).reverse(),
+                  borderColor: "#fb7185",
+                  backgroundColor: "rgba(251, 113, 133, 0.1)",
+                  tension: 0.4
                 }
               ]
+            }}
+            options={{
+              responsive: true,
+              plugins: {
+                legend: {
+                  display: true,
+                  position: 'top'
+                }
+              },
+              scales: {
+                y: {
+                  beginAtZero: true
+                }
+              }
             }}
           />
         </div>
