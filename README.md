@@ -1,6 +1,6 @@
 <div align="center">
 
-<h1 style="font-size: 48px;">📊 CSV Analytics Dashboard</h1>
+<h1 style="font-size: 48px;">📊 MetricView</h1>
 
 <p style="font-size: 18px;">
 A full-stack analytics dashboard that lets users upload CSV data, automatically compute statistics, visualize insights, and generate PDF reports — available on both <strong>Web</strong> and <strong>Desktop</strong> platforms.
