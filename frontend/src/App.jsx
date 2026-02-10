@@ -138,7 +138,7 @@ export default function App() {
         <div className="loginCard">
           <div className="loginHeader">
             <div className="logoIcon">📊</div>
-            <h1 className="loginTitle">CSV Dashboard</h1>
+            <h1 className="loginTitle">MetricView</h1>
             <p className="loginSubtitle">Sign in to access your analytics</p>
           </div>
 
@@ -187,7 +187,7 @@ export default function App() {
     <div className="container">
 
       <div className="header">
-        <h1 className="title">CSV Dashboard</h1>
+        <h1 className="title">MetricView</h1>
 
         <div className="actions">
           <button
@@ -261,7 +261,8 @@ export default function App() {
           <div className="list">
             {history.map((item) => (
               <div className="item" key={item.id}>
-                <b>{item.filename}</b> — {item.uploaded_at}
+                <b>{item.filename}</b>
+                <span>{item.uploaded_at}</span>
               </div>
             ))}
           </div>

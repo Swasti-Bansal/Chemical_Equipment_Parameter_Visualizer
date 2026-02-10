@@ -324,6 +324,9 @@ body{
 }
 
 .item{
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
   padding:12px;
   background:#111426;
   border-radius:8px;
@@ -336,4 +339,5 @@ body{
 
 .item b {
   color: var(--blue);
+  flex: 1;
 }

@@ -152,7 +152,7 @@ class AnimatedLabel(QLabel):
 class LoginDialog(QDialog):
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("Login - CSV Dashboard")
+        self.setWindowTitle("Login - MetricView")
         self.resize(480, 600)
         self.setStyleSheet("""
             QDialog {
@@ -185,12 +185,16 @@ class LoginDialog(QDialog):
         self.icon.setAlignment(Qt.AlignCenter)
         self.icon.setStyleSheet("font-size: 64px; background: transparent; border: none;")
         header_layout.addWidget(self.icon)
+        self.icon_effect = QGraphicsOpacityEffect(self.icon)
+        self.icon.setGraphicsEffect(self.icon_effect)
+        self.icon.setFixedHeight(80)
+
         
         # Start floating animation
         self.start_float_animation()
 
         # Title
-        title = QLabel("CSV Dashboard")
+        title = QLabel("MetricView")
         title.setAlignment(Qt.AlignCenter)
         title.setStyleSheet("font-size: 32px; font-weight: 700; color: #6366f1; background: transparent; border: none;")
         header_layout.addWidget(title)
@@ -291,7 +295,6 @@ class LoginDialog(QDialog):
         footer.setStyleSheet("font-size: 13px; color: #9aa3b2; background: transparent; border: none;")
         lay.addWidget(footer)
 
-        # Wrap container in main layout
         main_layout = QVBoxLayout()
         main_layout.setContentsMargins(20, 20, 20, 20)
         main_layout.addWidget(container)
@@ -302,7 +305,7 @@ class LoginDialog(QDialog):
 
 
     def start_float_animation(self):
-        """Animate the icon floating up and down"""
+        self.base_pos = None
         self.timer = QTimer(self)
         self.timer.timeout.connect(self.animate_float)
         self.timer.start(50)  
@@ -310,7 +313,8 @@ class LoginDialog(QDialog):
         self.float_direction = 1
         
     def animate_float(self):
-        """Update float position"""
+        if self.base_pos is None:
+            self.base_pos = self.icon.pos()
         self.float_offset += 0.5 * self.float_direction
         if self.float_offset >= 10:
             self.float_direction = -1
@@ -323,6 +327,8 @@ class LoginDialog(QDialog):
             border: none;
             padding-bottom: {int(self.float_offset)}px;
         """)
+        
+        self.icon.move(self.base_pos.x(), self.base_pos.y() - int(self.float_offset))
 
     def do_login(self):
         u = self.user.text().strip()
@@ -354,7 +360,7 @@ class Dashboard(QWidget):
     
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("CSV Dashboard (Desktop)")
+        self.setWindowTitle("MetricView")
         self.resize(1280, 760)
 
         self.file_path = None
@@ -370,7 +376,7 @@ class Dashboard(QWidget):
         title_wrap = QVBoxLayout()
         title_wrap.setSpacing(2)
 
-        self.title = QLabel("CSV Dashboard")
+        self.title = QLabel("MetricView")
         self.title.setObjectName("Title")
 
         self.sub = QLabel("Desktop + Web using same Django API")
@@ -656,6 +662,11 @@ class Dashboard(QWidget):
                 self.table.setItem(r, 2, QTableWidgetItem(str(item.get("uploaded_at", ""))))
                 self.table.setItem(r, 3, QTableWidgetItem(str(summ.get("total_equipment", "-"))))
                 self.table.setItem(r, 4, QTableWidgetItem(str(summ.get("avg_flowrate", "-"))))
+
+            self.table.resizeColumnsToContents()
+            self.table.horizontalHeader().setStretchLastSection(True)
+            self.table.setColumnWidth(0, 260)
+            self.table.setColumnWidth(1, 220)
 
             dist = s.get("type_distribution", {}) or {}
             self.bar_canvas.bar(list(dist.keys()), list(dist.values()), title="Equipment Distribution")
