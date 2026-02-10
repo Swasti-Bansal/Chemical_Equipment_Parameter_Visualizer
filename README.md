@@ -261,20 +261,6 @@ Your CSV file should have:
 
 <hr style="border: 0; height: 2px; background: linear-gradient(to right, #4CAF50, #2196F3); margin: 40px 0;">
 
-<h2 style="font-size: 32px;">📸 Screenshots</h2>
-
-### Web Dashboard
-![Web Dashboard](screenshots/web-dashboard.png)
-*Clean, responsive interface for data upload and visualization*
-
-### Desktop Application
-![Desktop App](screenshots/desktop-dashboard.png)
-*Native desktop experience with the same powerful features*
-
-<hr style="border: 0; height: 2px; background: linear-gradient(to right, #4CAF50, #2196F3); margin: 40px 0;">
-
-<h2 style="font-size: 32px;">💻 Usage Guide</h2>
-
 ### Step-by-Step Workflow
 
 #### 1. 🔐 Login
